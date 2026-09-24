@@ -19,6 +19,7 @@ const updateSchema = Joi.object({
   price: Joi.number().min(0),
   category: Joi.string().valid(...CATEGORIES),
   condition: Joi.string().valid(...CONDITIONS),
+  status: Joi.string().valid('active', 'sold', 'removed'),
   seller: Joi.string().hex().length(24)
 });
 
@@ -57,8 +58,16 @@ export async function updateListing(req, res, next) {
     const { value, error } = updateSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
     if (error) return res.status(400).json({ message: error.message });
 
+    const existing = await Listing.findById(req.params.id);
+    if (!existing) return res.status(404).json({ message: 'Listing not found' });
+
+    const changingToSold = value.status === 'sold';
+    const alreadySold = existing.status === 'sold';
+    if ((changingToSold || alreadySold) && (value.price !== undefined || value.category !== undefined)) {
+      return res.status(400).json({ message: 'Cannot change price or category once a listing is sold' });
+    }
+
     const listing = await Listing.findByIdAndUpdate(req.params.id, { $set: value }, { new: true, runValidators: true });
-    if (!listing) return res.status(404).json({ message: 'Listing not found' });
     res.json({ listing });
   } catch (err) { next(err); }
 }
