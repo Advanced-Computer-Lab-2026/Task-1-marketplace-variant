@@ -3,9 +3,12 @@ import Joi from 'joi';
 // TODO: write a validation schema for create/update per README.md section 2.
 const createUpdateSchema = Joi.object({
   title: Joi.string().required(),
-  price: Joi.number().required().min(0),
+  description: Joi.string(),
+  price: Joi.number().min(0).required(),
+  category: Joi.string().valid('textbooks', 'electronics', 'furniture', 'clothing', 'other'),
+  condition: Joi.string().valid('new', 'like-new', 'used', 'worn'),
+  status: Joi.string().valid('active', 'sold', 'removed'),
 });
-
 
 
 // GET /api/listings
@@ -14,7 +17,7 @@ export async function getAllListings(req, res, next) {
   try {
     // TODO
     const listings = await Listing.find().populate('seller', 'name email');
-    const activeListings = listings.filter(listing => listing.status === 'active');
+    const activeListings = listings.filter(listing => listing.status !== 'removed');
     res.json(activeListings);
   } catch (err) { next(err); }
 }
@@ -25,7 +28,7 @@ export async function getListing(req, res, next) {
   try {
     const listing = await Listing.findById(req.params.id).populate('seller', 'name email');
     if(!listing) return res.status(404).json({ message: 'Listing not found' });
-    // intentionally return even if inactive, I CANNN CHANGE ITTT though
+    if(listing.status === 'removed') return res.status(404).json({ message: 'Listing not found' });
     res.json(listing);
   } catch (err) { next(err); }
 }
@@ -34,7 +37,7 @@ export async function getListing(req, res, next) {
 // TODO: implement per README.md section 3.
 export async function createListing(req, res, next) {
   try {
-    const { error, value } = await createUpdateSchema.validateAsync(req.body);
+    const { error, value } = createUpdateSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.message });
 
   
@@ -47,7 +50,7 @@ export async function createListing(req, res, next) {
 // TODO: implement per README.md sections 3 and 5.
 export async function updateListing(req, res, next) {
   try {
-    const { error, value } = await createUpdateSchema.validateAsync(req.body);
+    const { error, value } = await createUpdateSchema.validate(req.body);
     if (error) return res.status(400).json({ message: error.message });
 
     const listing = await Listing.findById(req.params.id);
