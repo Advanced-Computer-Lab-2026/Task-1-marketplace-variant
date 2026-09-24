@@ -54,7 +54,8 @@ export async function getListing(req, res, next) {
 
     const listing = await Listing.findById(id).populate('seller', 'name email');
 
-    if (!listing) {
+    // Return 404 if listing doesn't exist OR if it has been soft-deleted ('removed')
+    if (!listing || listing.status === 'removed') {
       return res.status(404).json({ success: false, message: 'Listing not found' });
     }
 
