@@ -1,8 +1,8 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import listingRoutes from './routes/listings.js';
 import userRoutes from './routes/users.js';
+import listingRoutes from './routes/listings.js';
 
 const app = express();
 
@@ -12,8 +12,8 @@ app.use(express.json());
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
-app.use('/api/listings', listingRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/listings', listingRoutes);
 
 // Not found
 app.use((req, res) => {
