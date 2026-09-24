@@ -10,9 +10,9 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/health', (req, res) => res.json({ ok: true }));
+app.get('/api/health', (req, res) => res.json({ ok: true }));//direct http request
 
-app.use('/api/listings', listingRoutes);
+app.use('/api/listings', listingRoutes);//used a router
 app.use('/api/users', userRoutes);
 
 // Not found
