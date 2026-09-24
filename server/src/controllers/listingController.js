@@ -23,16 +23,7 @@ const updateListingSchema = Joi.object({
 // TODO: implement per README.md section 3.
 export async function getAllListings(req, res, next) {
   try {
-    const { includeRemoved, status } = req.query;
-
-    const filter = {};
-    if (status) {
-      filter.status = status;
-    } else if (!includeRemoved) {
-      filter.status = { $ne: 'removed' };
-    }
-
-    const listings = await Listing.find(filter).populate('seller', 'name email');
+    const listings = await Listing.find().populate('seller', 'name email');
     res.json(listings);
   } catch (err) { next(err); }
 }
@@ -42,13 +33,12 @@ export async function getAllListings(req, res, next) {
 export async function getListing(req, res, next) {
   try {
     const listing = await Listing.findById(req.params.id).populate('seller', 'name email');
-    if (!listing) {
+    if (!listing || listing.status === 'removed') {
       return res.status(404).json({ error: 'Listing not found' });
     }
     res.json(listing);
   } catch (err) { next(err); }
 }
-
 // POST /api/listings
 // TODO: implement per README.md section 3.
 export async function createListing(req, res, next) {
