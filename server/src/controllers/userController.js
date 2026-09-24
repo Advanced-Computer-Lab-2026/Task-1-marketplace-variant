@@ -20,7 +20,7 @@ function publicUser(u) {
 // GET /api/users
 export async function getAllUsers(req, res, next) {
   try {
-    const users = await User.find().sort({ createdAt: -1 }).lean();
+    const users = await User.find().sort({ createdAt: -1 }).lean();  // we can use findById() --> if you will search by id only
     res.json({ users: users.map(publicUser) });
   } catch (err) { next(err); }
 }
@@ -28,7 +28,7 @@ export async function getAllUsers(req, res, next) {
 // GET /api/users/:id
 export async function getUser(req, res, next) {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.id); //--
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json({ user: publicUser(user) });
   } catch (err) { next(err); }
