@@ -1,10 +1,30 @@
 import mongoose from 'mongoose';
 
-// TODO: define the Listing schema per README.md section 1.
+export const LISTING_CATEGORIES = ['textbooks', 'electronics', 'furniture', 'clothing', 'other'];
+export const LISTING_CONDITIONS = ['new', 'like-new', 'used', 'worn'];
+export const LISTING_STATUSES = ['active', 'sold', 'removed'];
 
 const listingSchema = new mongoose.Schema(
   {
-    // TODO
+    title: { type: String, required: true },
+    description: { type: String },
+    price: { type: Number, required: true, min: 0 },
+    category: {
+      type: String,
+      enum: LISTING_CATEGORIES,
+      default: 'other'
+    },
+    condition: {
+      type: String,
+      enum: LISTING_CONDITIONS,
+      default: 'used'
+    },
+    status: {
+      type: String,
+      enum: LISTING_STATUSES,
+      default: 'active'
+    },
+    seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
   },
   { timestamps: true }
 );
