@@ -1,14 +1,22 @@
-import { Router } from 'express';
+import express from 'express';
 import {
   getAllListings,
   getListing,
   createListing,
   updateListing,
-  deleteListing
+  deleteListing,
+  markAsSold,
 } from '../controllers/listingController.js';
 
-const router = Router();
+const router = express.Router();
 
-// TODO: wire up the routes described in README.md section 3.
+router.get('/', getAllListings);
+router.get('/:id', getListing);
+router.post('/', createListing);
+router.patch('/:id', updateListing);
+router.delete('/:id', deleteListing);
+
+// Stretch goal route
+router.patch('/:id/sold', markAsSold);
 
 export default router;

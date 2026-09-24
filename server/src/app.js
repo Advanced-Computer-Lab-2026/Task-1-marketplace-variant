@@ -4,6 +4,7 @@ import cors from 'cors';
 import listingRoutes from './routes/listings.js';
 import userRoutes from './routes/users.js';
 
+
 const app = express();
 
 app.use(morgan('dev'));
