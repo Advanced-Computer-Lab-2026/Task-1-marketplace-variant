@@ -1,3 +1,4 @@
+//commited
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
@@ -27,3 +28,5 @@ app.use((err, req, res, next) => {
 });
 
 export default app;
+
+// the above code is the main application file for an Express.js server. It sets up middleware for logging, CORS, and JSON parsing, defines routes for listings and users, and includes error handling for not found routes and general server errors.
