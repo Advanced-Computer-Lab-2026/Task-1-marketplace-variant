@@ -4,15 +4,16 @@ import cors from 'cors';
 import listingRoutes from './routes/listings.js';
 import userRoutes from './routes/users.js';
 
+
 const app = express();
 
 app.use(morgan('dev'));
 app.use(cors());
 app.use(express.json());
 
-app.get('/api/health', (req, res) => res.json({ ok: true }));
+app.get('/api/health', (req, res) => res.json({ ok: true })); //http request immediately
 
-app.use('/api/listings', listingRoutes);
+app.use('/api/listings', listingRoutes); //used router
 app.use('/api/users', userRoutes);
 
 // Not found
@@ -25,5 +26,6 @@ app.use((err, req, res, next) => {
   console.error(err);
   res.status(err.status || 500).json({ message: err.message || 'Server Error' });
 });
+
 
 export default app;
