@@ -55,7 +55,7 @@ export async function updateUser(req, res, next) {
     const { value, error } = updateSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
     if (error) return res.status(400).json({ message: error.message });
 
-    const doc = await User.findByIdAndUpdate(req.params.id, { $set: value }, { new: true, runValidators: true });
+    const doc = await User.findByIdAndUpdate(req.params.id, { $set: value }, { new: true});
     if (!doc) return res.status(404).json({ message: 'User not found' });
     res.json({ user: publicUser(doc) });
   } catch (err) { next(err); }
